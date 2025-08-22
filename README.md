@@ -1,6 +1,6 @@
-# 📱 Mamãe Monitora
+# 📱 Mãe Monitora
 
-**Mamãe Monitora** é um aplicativo pensado para ajudar os pais a **monitorar e acompanhar** a atividade online de seus filhos em jogos como **Roblox** e outros títulos populares.  
+**Mãe Monitora** é um aplicativo pensado para ajudar os pais a **monitorar e acompanhar** a atividade online de seus filhos em jogos como **Roblox** e outros títulos populares.  
 Nosso objetivo é oferecer mais **tranquilidade e segurança** para famílias, ajudando a proteger as crianças contra riscos como conteúdo inapropriado e interações perigosas.
 
 ---
@@ -56,7 +56,7 @@ Nosso objetivo é oferecer mais **tranquilidade e segurança** para famílias, a
 
 ## ⚠️ Aviso Legal
 
-O **Mamãe Monitora** é um aplicativo de uso **exclusivo por pais e responsáveis legais** para monitorar crianças sob sua tutela.  
+O **Mãe Monitora** é um aplicativo de uso **exclusivo por pais e responsáveis legais** para monitorar crianças sob sua tutela.  
 O uso indevido da ferramenta para vigiar adultos sem consentimento é proibido e pode ser ilegal conforme a legislação vigente.
 
 ---
